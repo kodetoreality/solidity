@@ -175,8 +175,6 @@ add_library(yul
 	optimiser/Suite.h
 	optimiser/SyntacticalEquality.cpp
 	optimiser/SyntacticalEquality.h
-	optimiser/TypeInfo.cpp
-	optimiser/TypeInfo.h
 	optimiser/UnusedFunctionParameterPruner.cpp
 	optimiser/UnusedFunctionParameterPruner.h
 	optimiser/UnusedFunctionsCommon.h
