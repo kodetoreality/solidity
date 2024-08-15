@@ -107,10 +107,11 @@ void ExpressionCompiler::appendStateVariableInitialization(VariableDeclaration c
 	}
 	if (_varDecl.immutable())
 		ImmutableItem(m_context, _varDecl).storeValue(*type, _varDecl.location(), true);
-	else if (_varDecl.referenceLocation() == VariableDeclaration::Location::Transient)
-		TransientStorageItem(m_context, _varDecl).storeValue(*type, _varDecl.location(), true);
 	else
+	{
+		solAssert(_varDecl.referenceLocation() != VariableDeclaration::Location::Transient);
 		StorageItem(m_context, _varDecl).storeValue(*type, _varDecl.location(), true);
+	}
 }
 
 void ExpressionCompiler::appendConstStateVariableAccessor(VariableDeclaration const& _varDecl)

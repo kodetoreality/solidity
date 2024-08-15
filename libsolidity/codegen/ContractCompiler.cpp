@@ -570,8 +570,9 @@ void ContractCompiler::appendReturnValuePacker(TypePointers const& _typeParamete
 
 void ContractCompiler::registerStateVariables(ContractDefinition const& _contract)
 {
-	for (auto const& var: ContractType(_contract).stateVariables())
-		m_context.addStateVariable(*std::get<0>(var), std::get<1>(var), std::get<2>(var));
+	for (auto const location: {DataLocation::Storage, DataLocation::Transient})
+		for (auto const& var: ContractType(_contract).stateVariables(location))
+			m_context.addStateVariable(*std::get<0>(var), std::get<1>(var), std::get<2>(var));
 }
 
 void ContractCompiler::registerImmutableVariables(ContractDefinition const& _contract)
@@ -586,11 +587,7 @@ void ContractCompiler::initializeStateVariables(ContractDefinition const& _contr
 	solAssert(!_contract.isLibrary(), "Tried to initialize state variables of library.");
 	for (VariableDeclaration const* variable: _contract.stateVariables())
 	{
-		if (variable->referenceLocation() == VariableDeclaration::Location::Transient)
-		{
-			solAssert(!variable->value(), "");
-			return;
-		}
+		solAssert(variable->referenceLocation() != VariableDeclaration::Location::Transient || !variable->value());
 		if (variable->value() && !variable->isConstant())
 			ExpressionCompiler(m_context, m_optimiserSettings.runOrderLiterals).appendStateVariableInitialization(*variable);
 	}
